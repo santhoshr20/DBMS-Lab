@@ -1,0 +1,116 @@
+CREATE TABLE Musician(
+M_ID varchar2(4),
+Name varchar2(20) CONSTRAINT music_name_not_null NOT NULL,
+BirthPlace varchar2(15),
+CONSTRAINT music_pk PRIMARY KEY(M_ID)
+);
+
+DESC Musician;
+
+INSERT INTO Musician VALUES('M1','Amith','Chennai');
+INSERT INTO Musician VALUES('M2','Sree','Banglore');
+INSERT INTO Musician VALUES('M3','Ram','Chennai');
+INSERT INTO Musician VALUES('M4','Sandy','Mumbai');
+INSERT INTO Musician VALUES('M5','Teki','Delhi');
+
+SELECT * from Musician;
+
+CREATE TABLE Studio(
+Studio_Name varchar2(20),
+Address varchar2(40),
+Phone Number(10),
+CONSTRAINT studio_pk PRIMARY KEY(Studio_Name)
+);
+
+DESC Studio;
+
+INSERT INTO Studio VALUES('VM Studio','No 2 , 1st street ,chennai',1234567890);
+INSERT INTO Studio VALUES('SK Studio','No 5 , Main Road ,chennai',2345678901);
+INSERT INTO Studio VALUES('ANI Studio','No 8 , 6th street ,chennai',3456789012);
+INSERT INTO Studio VALUES('ARM Studio','No 12 , Near Four cross ,chennai',4567890123);
+INSERT INTO Studio VALUES('DSP Studio','No 112 , Anna Nagar ,chennai',5678901234);
+
+SELECT * from Studio;
+
+CREATE TABLE Album(
+Album_Name varchar2(25),
+Album_ID Varchar2(4),
+Year Number(4),
+No_Tracks Number(2),
+Studio_name varchar2(20),
+Gener varchar2(5),
+M_ID Varchar2(4),
+CONSTRAINT album_chk_gener CHECK (Gener IN('CAR','DIV','MOV','POP')),
+CONSTRAINT album_chl_year CHECK(Year > 1945),
+CONSTRAINT album_pk PRIMARY KEY(Album_ID),
+CONSTRAINT album_fk_sn FOREIGN KEY(Studio_name) REFERENCES Studio(Studio_Name),
+CONSTRAINT album_fk_muid FOREIGN KEY(M_ID) REFERENCES Musician(M_ID)
+);
+DESC Album;
+
+INSERT INTO Album VALUES('vada Chennai','A1',2018,5,'ANI Studio','CAR','M1');
+INSERT INTO Album VALUES('Bigil','A2',2019,5,'ARM Studio','CAR','M4');
+INSERT INTO Album VALUES('Moonu (3)','A3',2014,6,'ANI Studio','CAR','M1');
+INSERT INTO Album VALUES('vadhalam','A4',2016,5,'ANI Studio','POP','M2');
+INSERT INTO Album VALUES('Action','A5',2019,4,'VM Studio','DIV','M5');
+
+SELECT * from Album;
+
+CREATE TABLE Song(
+Album_ID varchar2(4),
+Track_No Number(3),
+Song_Name varchar2(30) CONSTRAINT song_name_not_null NOT NULL,
+Length varchar2(10),
+Genre varchar2(10),
+CONSTRAINT song_chk_genre CHECK(Genre IN ('PHI', 'REL', 'LOV', 'PAT')),
+CONSTRAINT song_chk_len CHECK((Genre = 'PAT' and Length > 7) or Genre != 'PAT'),
+CONSTRAINT song_pk PRIMARY KEY(Album_ID,Track_No),
+CONSTRAINT song_fk FOREIGN KEY(Album_ID) REFERENCES Album(Album_ID)
+);
+
+DESC Song;
+
+INSERT INTO Song VALUES('A1',1,'Ennadi maayavi',6,'PHI');
+INSERT INTO Song VALUES('A3',2,'Why this kolaveri',9,'PAT');
+INSERT INTO Song VALUES('A2',3,'Vanakkam mappi',7,'REL');
+INSERT INTO Song VALUES('A5',4,'Po Uravae',7,'LOV');
+INSERT INTO Song VALUES('A4',5,'Venmeagam yenai',8,'PAT');
+
+SELECT * FROM Song;
+
+CREATE TABLE Artist(
+Artist_ID varchar2(4),
+Artist_Name varchar2(25),
+CONSTRAINT artist_pk PRIMARY KEY(Artist_ID),
+CONSTRAINT artist_name_uniq UNIQUE(Artist_Name)
+);
+
+DESC Artist;
+
+INSERT INTO Artist VALUES('AR1','Ani');
+INSERT INTO Artist VALUES('AR2','ARR');
+INSERT INTO Artist VALUES('AR3','Sid');
+INSERT INTO Artist VALUES('AR4','GV');
+INSERT INTO Artist VALUES('AR5','DSP');
+
+SELECT * from Artist;
+
+CREATE TABLE SungBy(
+Album_ID varchar2(4),
+Track_No Number(3),
+Artist_ID varchar2(4),
+R_Date Date,
+CONSTRAINT sungby_pk PRIMARY KEY(Album_ID,Track_No,Artist_ID),
+CONSTRAINT sungby_fk FOREIGN KEY(Album_ID,Track_No) REFERENCES Song(Album_ID,Track_No),
+CONSTRAINT sungby_fk2 FOREIGN KEY(Artist_ID) REFERENCES Artist(Artist_ID)
+);
+
+DESC SungBy
+
+INSERT INTO SungBy VALUES('A1',1,'AR1','07Jan2017');
+INSERT INTO SungBy VALUES('A1',1,'AR2','05Mar2018');
+INSERT INTO SungBy VALUES('A2',3,'AR3','15Jun2015');
+INSERT INTO SungBy VALUES('A1',1,'AR3','25Feb2019');
+INSERT INTO SungBy VALUES('A3',2,'AR5','23Aug2017');
+
+SELECT * from SungBy;

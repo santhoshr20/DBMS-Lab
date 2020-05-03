@@ -1,0 +1,196 @@
+SQL> set echo on;
+SQL> set line 110;
+SQL> @C:\Users\Viki\Desktop\ex7.sql
+SQL> REM Ex7
+SQL> REM PL/SQL – Triggers
+SQL> 
+SQL> REM 1. The date of arrival should be always later than or on the same date of departure.
+SQL> 
+SQL> CREATE OR REPLACE TRIGGER dept_date
+  2  BEFORE INSERT OR UPDATE
+  3  ON fl_schedule
+  4  FOR EACH ROW
+  5  
+  6  BEGIN
+  7  	     IF (:new.departs>:new.arrives) OR (:new.departs>:old.arrives) OR (:old.departs>:new.arrives) THEN
+  8  		     RAISE_APPLICATION_ERROR(-20111,'The date of arrival should be always later than or on the same date of departure');
+  9  	     END IF;
+ 10  END;
+ 11  /
+
+Trigger created.
+
+SQL> 
+SQL> REM insert
+SQL> INSERT INTO fl_schedule values('AF-12','25-apr-2005',1245,'21-apr-2005',1850,450.25);
+INSERT INTO fl_schedule values('AF-12','25-apr-2005',1245,'21-apr-2005',1850,450.25)
+            *
+ERROR at line 1:
+ORA-20111: The date of arrival should be always later than or on the same date of departure 
+ORA-06512: at "HR.DEPT_DATE", line 3 
+ORA-04088: error during execution of trigger 'HR.DEPT_DATE' 
+
+
+SQL> 
+SQL> SELECT * FROM fl_schedule
+  2  WHERE flno='AF-12' AND departs='25-apr-2005';
+
+no rows selected
+
+SQL> 
+SQL> 
+SQL> REM update
+SQL> UPDATE fl_schedule
+  2  SET departs='25-apr-2005'
+  3  WHERE flno='AF-12' AND departs='22-apr-2005';
+UPDATE fl_schedule
+       *
+ERROR at line 1:
+ORA-20111: The date of arrival should be always later than or on the same date of departure 
+ORA-06512: at "HR.DEPT_DATE", line 3 
+ORA-04088: error during execution of trigger 'HR.DEPT_DATE' 
+
+
+SQL> 
+SQL> SELECT * FROM fl_schedule
+  2  WHERE flno='AF-12' AND departs='25-apr-2005';
+
+no rows selected
+
+SQL> 
+SQL> 
+SQL> 
+SQL> REM 2. Flight number CX7520 is scheduled only on Tuesday, Friday and Sunday
+SQL> 
+SQL> CREATE OR REPLACE TRIGGER check_day
+  2  BEFORE INSERT OR UPDATE ON fl_schedule
+  3  FOR EACH ROW
+  4  DECLARE
+  5  	     day_name VARCHAR2(10);
+  6  BEGIN
+  7  	     SELECT TO_CHAR(:NEW.departs,'DY') INTO day_name FROM DUAL;
+  8  	     IF(:NEW.flno='CX-7520') AND (day_name NOT IN('TUE','FRI','SUN')) THEN
+  9  		     RAISE_APPLICATION_ERROR(-20333,'Flight number CX7520 is scheduled only on Tuesday, Friday and Sunday');
+ 10  	     END IF;
+ 11  END;
+ 12  /
+
+Trigger created.
+
+SQL> 
+SQL> REM insert
+SQL> INSERT INTO fl_schedule VALUES ('CX-7520','20-apr-2020',0730,'20-apr-2020',0840,225.43);
+INSERT INTO fl_schedule VALUES ('CX-7520','20-apr-2020',0730,'20-apr-2020',0840,225.43)
+            *
+ERROR at line 1:
+ORA-20333: Flight number CX7520 is scheduled only on Tuesday, Friday and Sunday 
+ORA-06512: at "HR.CHECK_DAY", line 6 
+ORA-04088: error during execution of trigger 'HR.CHECK_DAY' 
+
+
+SQL> 
+SQL> SELECT * FROM fl_schedule
+  2  WHERE flno='CX-7520' AND departs='20-apr-2020';
+
+no rows selected
+
+SQL> 
+SQL> REM update
+SQL> UPDATE fl_schedule
+  2  SET departs='13-apr-2005'
+  3  WHERE flno='CX-7520' AND departs='12-apr-2005';
+UPDATE fl_schedule
+       *
+ERROR at line 1:
+ORA-20333: Flight number CX7520 is scheduled only on Tuesday, Friday and Sunday 
+ORA-06512: at "HR.CHECK_DAY", line 6 
+ORA-04088: error during execution of trigger 'HR.CHECK_DAY' 
+
+
+SQL> 
+SQL> SELECT * FROM fl_schedule
+  2  WHERE flno='CX-7520' AND departs='13-apr-2005';
+
+no rows selected
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> REM 3. An aircraft is assigned to a flight only if its cruising range is more than the distance of the
+SQL> REM flights’ route.
+SQL> 
+SQL> CREATE OR REPLACE TRIGGER check_assign
+  2  BEFORE INSERT OR UPDATE ON flights
+  3  FOR EACH ROW
+  4  DECLARE
+  5  	     cruising aircraft.cruisingrange%TYPE;
+  6  	     dist routes.distance%TYPE;
+  7  
+  8  	     CURSOR c1 IS
+  9  	     SELECT cruisingrange
+ 10  	     FROM aircraft
+ 11  	     WHERE aid = :new.aid;
+ 12  
+ 13  	     CURSOR c2 IS
+ 14  	     SELECT distance
+ 15  	     FROM routes
+ 16  	     WHERE routeID = :NEW.rID;
+ 17  
+ 18  BEGIN
+ 19  	     OPEN c1;
+ 20  	     OPEN c2;
+ 21  
+ 22  	     FETCH c1 INTO cruising;
+ 23  	     FETCH c2 INTO dist;
+ 24  
+ 25  	     CLOSE c1;
+ 26  	     CLOSE c2;
+ 27  
+ 28  	     IF (dist > cruising) THEN
+ 29  		     RAISE_APPLICATION_ERROR(-20001,'Cruising range should be more than distance');
+ 30  	     END IF;
+ 31  END;
+ 32  /
+
+Trigger created.
+
+SQL> 
+SQL> 
+SQL> REM insert
+SQL> INSERT INTO flights VALUES('8A-6577','MQ198',5);
+INSERT INTO flights VALUES('8A-6577','MQ198',5)
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (HR.RID_FK) violated - parent key not found 
+
+
+SQL> 
+SQL> SELECT *
+  2  FROM flights
+  3  WHERE flightno='8A-6577';
+
+no rows selected
+
+SQL> 
+SQL> 
+SQL> REM update
+SQL> UPDATE flights
+  2  SET aid=16
+  3  WHERE flightno='AF-12';
+UPDATE flights
+       *
+ERROR at line 1:
+ORA-20001: Cruising range should be more than distance 
+ORA-06512: at "HR.CHECK_ASSIGN", line 26 
+ORA-04088: error during execution of trigger 'HR.CHECK_ASSIGN' 
+
+
+SQL> 
+SQL> SELECT *
+  2  FROM flights
+  3  WHERE flightno='AF-12' AND aid=16;
+
+no rows selected
+
+SQL> spool off;

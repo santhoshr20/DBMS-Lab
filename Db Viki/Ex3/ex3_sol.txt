@@ -1,0 +1,230 @@
+******************************RESULTSET********************************************
+ASSIGNMENT - 3
+
+******************************RESULTSET********************************************
+
+--1.Display the flight number,departure date and time of a flight,its route details
+and its aircraft name for an aircraft of type either Schweizer or Piper that 
+departs during 8.00 PM and 9.00 PM.
+
+FLNO    DEPARTS        DTIME ROUTEI ORIG_AIRPORT         DEST_AIRPORT           DISTANCE ANAME
+------- --------- ---------- ------ -------------------- -------------------- ---------- ---------------------
+RP-5018 15-APR-05       2100 MC201  Madison              Chicago                     150 Schweizer 2-33
+AS-5062 13-APR-05       2010 MM203  Madison              Minneapolis                 247 Piper PA-46 Meridian
+
+
+--2.For all the routes, display the flight number, origin and destination airport
+if a flight is assigned for that route.
+
+ROUTEI FLIGHTN ORIG_AIRPORT         DEST_AIRPORT
+------ ------- -------------------- ------------------
+CL150  A5-3376 Chicago              Los Angeles
+CN151  A5-3246 Chicago              New York
+DM251  9E-3749 Detroit              Montreal
+DN250  MQ-4565 Detroit              New York
+DN250  MQ-4477 Detroit              New York
+LB103  B6-474  Los Angeles          Boston
+LB103  B6-482  Los Angeles          Boston
+LC101  WN-484  Los Angeles          Chicago
+LC101  WN-434  Los Angeles          Chicago
+LD102  WS-5060 Los Angeles          Dallas
+LD102  CX-7520 Los Angeles          Dallas
+
+ROUTEI FLIGHTN ORIG_AIRPORT         DEST_AIRPORT
+------ ------- -------------------- ------------------
+LD102  QF-3045 Los Angeles          Dallas
+LH106  HA-1    Los Angeles          Honolulu
+LH106  UA-1428 Los Angeles          Honolulu
+LH106  HA-3    Los Angeles          Honolulu
+LS104  VA-2    Los Angeles          Sydney
+LS104  VA-6551 Los Angeles          Sydney
+LS104  DJ-2    Los Angeles          Sydney
+LT105  MH-93   Los Angeles          Tokyo
+LT105  AI-7205 Los Angeles          Tokyo
+LT105  SQ-11   Los Angeles          Tokyo
+LW100  JJ-2482 Los Angeles          Washington D.C.
+
+ROUTEI FLIGHTN ORIG_AIRPORT         DEST_AIRPORT
+------ ------- -------------------- ------------------
+LW100  SN-8814 Los Angeles          Washington D.C.
+LW100  JJ-7456 Los Angeles          Washington D.C.
+MC201  G7-3664 Madison              Chicago
+MC201  RP-5018 Madison              Chicago
+MD200  9E-3851 Madison              Detroit
+MD200  9E-3622 Madison              Detroit
+MM203  AS-5062 Madison              Minneapolis
+MM203  AS-5958 Madison              Minneapolis
+MN204  G7-6205 Madison              New York
+MN204  EV-5134 Madison              New York
+MNY300         Minneapolis          New York
+
+ROUTEI FLIGHTN ORIG_AIRPORT         DEST_AIRPORT
+------ ------- -------------------- ------------------
+MP202  FX-2351 Madison              Pittsburgh
+NYL400 BA-178  NewYork              London
+NYL400 VS-26   NewYork              London
+NYL400 IB-4618 NewYork              London
+NYL400 CY-1846 NewYork              London
+NYP401 AF-23   NewYork              Paris
+NYP401 AF-11   NewYork              Paris
+NYP401 RJ-7056 NewYork              Paris
+PC351          Pittsburgh           Chicago
+PN350  DL-3402 Pittsburgh           New York
+
+43 rows selected.
+
+
+--3.For all aircraft with cruisingrange over 5,000 miles, find the name of the 
+aircraft and the average salary of all pilots certified for this aircraft.
+
+NAME                            AVGSALARY
+------------------------------ ----------
+Boeing 767-400ER                   209557
+Boeing 777-300                 257973.333
+Airbus A340-300                217597.667
+Boeing 747-400                  244776.75
+Lockheed L1011 Tristar          242685.75
+
+
+
+--4.Show the employee id,name and salary of employees who are not pilots
+and their salary is more than the average salary of pilots.
+
+       EID ENAME                              SALARY
+---------- ------------------------------ ----------
+ 486512566 David Anderson                     743001
+
+
+
+--5.Find the id and name of pilots who were certified to operate some 
+aircrafts but at least one of that aircraft is not scheduled from any routes.
+
+       EID ENAME
+---------- ------------------------------
+ 573284895 Eric Cooper
+ 567354612 Lisa Walker
+ 556784565 Mark Young
+ 390487451 Lawrence Sperry
+ 269734834 George Wright
+ 142519864 Betty Adams
+ 574489456 William Jones
+ 356187925 Robert Brown
+ 269734834 George Wright
+  90873519 Elizabeth Taylor
+
+10 rows selected.
+
+
+--6.Display the origin and destination of the flights having atleast three departures 
+with maximum distance covered.
+
+ORIG_AIRPORT         DEST_AIRPORT
+-------------------- --------------------
+Los Angeles          Sydney
+
+
+--7.Display name and salary of pilot whose salary is more than the average salary
+of any pilots for each route other than flights originating from Madison airport.
+
+ENAME                              SALARY
+------------------------------ ----------
+George Wright                      289950
+Betty Adams                        227489
+Karen Scott                        205187
+Angela Martinez                    212156
+Lawrence Sperry                    212156
+Mark Young                         205187
+Joseph Thompson                    212156
+Lisa Walker                        256481
+
+8 rows selected.
+
+
+--8.Display the flight number,aircraft type,source and destination airport
+of the aircraft having maximum number of flights to Honolulu.
+
+FLIGHTN TYPE       ORIG_AIRPORT         DEST_AIRPORT
+------- ---------- -------------------- --------------------
+HA-1    Airbus     Los Angeles          Honolulu
+HA-3    Airbus     Los Angeles          Honolulu
+
+
+--9.Display the pilot(s) who are certified to pilot all aircraft in a type.
+
+       EID TYPE         COUNT(*)
+---------- ---------- ----------
+  90873519 Saab                1
+ 548977562 Piper               1
+ 574489457 Schweizer           1
+ 356187925 Saab                1
+ 287321212 Piper               1
+ 390487451 Airbus              3
+
+6 rows selected.
+
+
+--10.Name of an employee who is earning the maximum salary
+among the airport having maximum number of departures.
+
+ENAME                              SALARY
+------------------------------ ----------
+George Wright                      289950
+
+
+--11.Display the departure chart as follows:
+flight number,departure(date,airport,time),destination airport,arrival time,aircraft name
+for the flights from NewYork airport during 15 to 19th APril 2005. Make sure that
+the route contains atleast two flights in the above specified condition.
+
+
+FLIGHTN DEPARTS   ORIG_AIRPORT              DTIME DEST_AIRPORT              ATIME ANAME
+------- --------- -------------------- ---------- -------------------- ---------- ------------------------------
+AF-11   17-APR-05 NewYork                    1340 Paris                      1530 Boeing 757-300
+IB-4618 18-APR-05 NewYork                    1310 London                     1150 Lockheed L1011 Tristar
+BA-178  15-APR-05 NewYork                    1140 London                     1020 Boeing 757-300
+
+
+--------------------------USING SET OPERATORS_------------------------------
+--12.A customer wants to travel from Madison to New York with no more than two changes of flight.
+List the flight numbers from Madison if the customer wants to arrive in New York by 6.50 p.m.
+
+FLIGHTN
+-------
+9E-3622
+9E-3851
+EV-5134
+G7-3664
+G7-6205
+
+
+--13.Display the id and name of employee(s) who are not pilots.
+
+       EID ENAME
+---------- ------------------------------
+  15645489 Donald King
+ 248965255 Barbara Wilson
+ 254099823 Patricia Jones
+ 310454877 Chad Stewart
+ 348121549 Haywood Kelly
+ 486512566 David Anderson
+ 489221823 Richard Jackson
+ 489456522 Linda Davis
+ 552455348 Dorthy Lewis
+ 619023588 Jennifer Thomas
+
+10 rows selected.
+
+
+--14.Display the id and name of pilot(s) who pilot the aircrafts from
+Los Angels and Detroit airport.
+
+       EID ENAME
+---------- ------------------------------
+ 159542516 William Moore
+ 269734834 George Wright
+ 556784565 Mark Young
+ 567354612 Lisa Walker
+ 573284895 Eric Cooper
+
+******************************END OF RESULT********************************************
+
